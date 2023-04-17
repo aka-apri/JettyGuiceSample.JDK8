@@ -37,11 +37,7 @@ public class StartupServiceListener extends GuiceServletContextListener implemen
 
         var injector = Guice.createInjector(modules);
 
-        return GuiceBridgeFeature.InjectorStore
-                .register(
-                        StartupServiceListener.class,
-                        injector
-                );
+        return injector;
     }
 
     private List<Class<?>> loadClasses(List<String> modules){
