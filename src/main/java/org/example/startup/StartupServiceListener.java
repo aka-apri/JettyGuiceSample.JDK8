@@ -5,7 +5,8 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.servlet.GuiceServletContextListener;
 import com.google.inject.servlet.ServletModule;
-import org.example.config.GuiceBridgeFeature;
+import com.squarespace.jersey2.guice.JerseyGuiceModule;
+import com.squarespace.jersey2.guice.JerseyGuiceUtils;
 import org.example.config.guice.ApiModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +19,9 @@ import java.util.stream.Collectors;
 
 public class StartupServiceListener extends GuiceServletContextListener implements HttpSessionListener{
 
-    private Logger logger = LoggerFactory.getLogger(StartupServiceListener.class);
+    private static final Logger logger = LoggerFactory.getLogger(StartupServiceListener.class);
+
+    private Injector injector;
 
     @Override
     protected Injector getInjector() {
@@ -35,8 +38,14 @@ public class StartupServiceListener extends GuiceServletContextListener implemen
             throw new RuntimeException(e);
         }
 
-        var injector = Guice.createInjector(modules);
-
+        if (injector == null) {
+            injector = Guice.createInjector(
+                    new JerseyGuiceModule("__HK2_Generated_0"),
+                    new ApiModule()
+            );
+            JerseyGuiceUtils.install(injector);
+            logger.debug("injector created");
+        }
         return injector;
     }
 

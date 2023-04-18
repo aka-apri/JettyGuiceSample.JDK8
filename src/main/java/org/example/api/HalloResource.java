@@ -1,5 +1,6 @@
 package org.example.api;
 
+import org.example.aop.Transactional;
 import org.example.aop.UserLoggedIn;
 import org.example.service.ApiService;
 
@@ -16,6 +17,7 @@ public class HalloResource {
 
     @GET
     @UserLoggedIn
+    @Transactional
     public Response hallo() {
         return Response.ok("Message: " + apiService.getServiceDescription()).build();
     }
